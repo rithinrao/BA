@@ -1,0 +1,83 @@
+---
+title: "assignment 2"
+author: "Rithin Gujja"
+date: "09/11/2019"
+output:
+  word_document: default
+  html_document: default
+---
+1)
+```{r}
+set.seed(2017)
+X=runif(100)*10
+Y=X*4+3.45
+Y=rnorm(100)*0.29*Y+Y
+## a)
+cor(X,Y)
+plot(X,Y)
+##  yes, we can fit a linear model y based on x and has a positive correlation.
+## b)
+model<-lm(Y~X)
+summary(model)
+##   The accuracy of above linear model is 65.17%, Varability in y can be     explained by x 
+##    Y=3.6108X+4.4655 is the equation of the model
+## c)
+(cor(Y,X))^2
+##    square of correlation is multiple r-square.
+##    Coefficient of Determination= (Correlation Coefficient)^2      
+## d)
+hist(model$residuals,freq = FALSE,ylim = c(0,0.05))
+qqnorm(model$residuals,col="red")
+##  From the above graph, residuals are normally distrubuted, So the linear model is appropriate.
+```
+2a)
+```{r}
+head(mtcars)
+summary(lm(hp~wt,data=mtcars))
+summary(lm(hp~mpg,data=mtcars))
+## chris is correct by seeing the multiple r-squared value, mpg got high r square value 60% compared to wt of car 43%. 
+```
+2b)
+```{r}
+summary(model2<-lm(hp~cyl+mpg,data = mtcars))
+((model2$coefficients[2]*4)+model2$coefficients[1])+(model2$coefficients[3]*22)
+predict(model2,data.frame(cyl=4,mpg=22),interval = "prediction",level=0.85)
+```
+3a)
+```{r}
+library(mlbench)
+data(BostonHousing)
+hos<-lm(medv~crim+zn+ptratio+chas,data=BostonHousing)
+summary(hos)
+## It is not very accurate model because R square value is very low of 36%.
+```
+3b1)
+```{r}
+summary(hos1<-lm(medv~chas,data = BostonHousing))
+hos1$coefficients
+(hos1$coefficients[2]*0)+hos1$coefficients[1]
+(hos1$coefficients[2]*1)+hos1$coefficients[1]
+## by using the correlation cofficients the house with chas of 1 is more expensive than house without chas of 0 with a value of 4.3
+```
+3b2)
+```{r}
+summary(hos2<-lm(medv~ptratio,data = BostonHousing))
+(hos2$coefficients[2]*15)+hos2$coefficients[1]
+(hos2$coefficients[2]*18)+hos2$coefficients[1]
+## By using the correlation coffecients, as the coffecient are negative so if the ptratio increases the housing price decreases.
+## The price of house whice has ptratio of 15 is high compared to price of house which has a ptratio of 18 by a value of 6.471
+```
+3c)
+```{r}
+summary(hos)
+##  A low p-value (< 0.05) indicates that you can reject the null hypothesis Hence from the model summary none of the independent varialbes are statistically insignificant.
+```
+3d)
+```{r}
+anova(hos)
+## by comparing p values 
+## 1) crim
+## 2) ptratio
+## 3) zn
+## 4)chas
+```
